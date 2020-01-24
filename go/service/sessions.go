@@ -16,6 +16,7 @@ func (s *Service) GetStateOfTheState(ctx context.Context) error {
 	respMsg := models.SpReplyMessage{
 		EventType: models.EventTypeStateOfTheState,
 		Payload: state,
+		TargetSession: nil,
 	}
 
 	return s.shareWithClients(map[*websocket.Conn]struct{}{
@@ -55,6 +56,7 @@ func (s *Service) GetSessionState(ctx context.Context, req models.SpReqPayloadSe
 			SessionID:    req.Payload.SessionID,
 			Participants: participants,
 		},
+		TargetSession: nil,
 	}
 
 	return s.shareWithClients(map[*websocket.Conn]struct{}{
@@ -76,6 +78,7 @@ func (s *Service) CreateSession(ctx context.Context, req models.SpReqPayloadSess
 	respMsg := models.SpReplyMessage{
 		EventType: models.EventTypeStateOfTheState,
 		Payload:   state,
+		TargetSession: nil,
 	}
 
 	if err := s.shareWithClients(s.clients, respMsg); err != nil {
@@ -228,6 +231,7 @@ func (s *Service) TerminateSession(ctx context.Context, req models.SpReqPayloadT
 	respMsg := models.SpReplyMessage{
 		EventType: models.EventTypeStateOfTheState,
 		Payload:   state,
+		TargetSession: nil,
 	}
 
 	if err := s.shareWithClients(s.clients, respMsg); err != nil {
