@@ -30,7 +30,11 @@ export class ActiveSessionTileComponent {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(this.destroySessionIfItIsWilled);
-  };
+  }
+
+  isPartnerForever() {
+    return this.session.id === 29 || this.session.sessionName === 'PDT - OCHRE FOR LIFE';
+  }
 
   private destroySessionIfItIsWilled = (result: boolean) => {
     if (result) {
@@ -38,5 +42,5 @@ export class ActiveSessionTileComponent {
       this.socketService.send(message);
       this.localStorage.removeSession(this.session.id);
     }
-  };
+  }
 }

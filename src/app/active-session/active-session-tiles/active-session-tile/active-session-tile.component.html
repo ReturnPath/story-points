@@ -8,7 +8,7 @@
   <mat-card-content>
   </mat-card-content>
 
-  <mat-card-footer>
+  <mat-card-footer *ngIf="!isPartnerForever()">
     <div class="actions">
       <button (click)="closeSession()" mat-button>
         <mat-icon>delete_forever</mat-icon>
