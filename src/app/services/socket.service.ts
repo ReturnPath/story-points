@@ -4,12 +4,12 @@ import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from '@angular/material';
 import {map} from 'rxjs/operators';
 import {SpMessage} from '../active-session/model/events.model';
-import {AlertSnackbarComponent} from "../alert-snackbar/alert-snackbar.component";
+import {AlertSnackbarComponent} from '../alert-snackbar/alert-snackbar.component';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SocketService  {
+export class SocketService {
   private socket: WebSocketSubject<any>;
 
   constructor(private snackBar: MatSnackBar) {
