@@ -1,6 +1,16 @@
 <div *ngIf="isDisabled(); else controlPanel">
   <div class="memorial">
-    @}~}~~~ In Memoriam @}~}~~~
+    <span style='color: red'>@</span>
+    <span style='color: lightgreen'>}</span>
+    <span style='color: darkgreen'>~</span>
+    <span style='color: lightgreen'>}</span>
+    <span style='color: darkgreen'>~~~</span>
+    In Memoriam
+    <span style='color: darkgreen'>~~~</span>
+    <span style='color: lightgreen'>&#x0007B;</span>
+    <span style='color: darkgreen'>~</span>
+    <span style='color: lightgreen'>&#x0007B;</span>
+    <span style='color: red'>@</span>
   </div>
 </div>
 <ng-template #controlPanel>
