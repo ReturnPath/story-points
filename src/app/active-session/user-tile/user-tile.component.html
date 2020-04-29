@@ -1,5 +1,11 @@
 <mat-card
-  [ngClass]="{'my-card': myCard && !isDarkTheme, 'my-card-dark': myCard && isDarkTheme, 'voted': participant.hasVoted && !isDarkTheme, 'voted-dark': participant.hasVoted && isDarkTheme}">
+  [ngClass]="{
+  'my-card': myCard && !isDarkTheme,
+  'my-card-dark': myCard && isDarkTheme,
+  'voted': participant.hasVoted && !isDarkTheme,
+  'voted-dark': participant.hasVoted && isDarkTheme,
+  'partner-forever': isPartnerForeverProtected()
+  }">
   <mat-card-title>
 
     <span>{{!pointsVisible && !myCard ? "?" : participant.point}}</span>
@@ -9,7 +15,7 @@
     {{participant.participantName}}
   </mat-card-content>
 
-  <mat-card-footer>
+  <mat-card-footer *ngIf="!isPartnerForeverProtected()">
     <div class="actions">
       <button (click)="removeUser()" mat-button>
         <mat-icon>delete_forever</mat-icon>

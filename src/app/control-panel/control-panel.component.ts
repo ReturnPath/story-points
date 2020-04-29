@@ -63,6 +63,10 @@ export class ControlPanelComponent implements OnInit {
     ).subscribe();
   }
 
+  isDisabled() {
+    return +this.sessionId === 29;
+  }
+
   handleEvents = (messageData: SpMessage) => {
     const eventType = messageData.eventType;
     const payload = messageData.payload as VotingSchemeChangedPayload;
