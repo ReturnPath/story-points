@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SocketService} from '../services/socket.service';
 import {filter, flatMap, map, tap} from 'rxjs/operators';
@@ -13,12 +13,12 @@ import {
   ParticipantRemovedSessionMessage,
   ParticipantRemovedSessionPayload,
   PointSubmittedForParticipantMessage,
-  PointSubmittedForParticipantPayload,
+  PointSubmittedForParticipantPayload, ReberoniMessage, ReberoniPayload,
   ResetPointsForSessionMessage,
   ResetPointsForSessionPayload,
   RevealPointsForSessionMessage,
   RevealPointsForSessionPayload,
-  SpMessage
+  SpMessage, VotingSchemeChangedPayload, VotingSchemeMessgae
 } from './model/events.model';
 import {Participant, StoryPointSession} from './model/session.model';
 import {
@@ -30,16 +30,17 @@ import {
 import {ThemeService} from '../services/theme.service';
 import {ParticipantFilterPipe} from '../pipe/participant-filter.pipe';
 import {AlertSnackbarComponent} from '../alert-snackbar/alert-snackbar.component';
-import {PointVisibilityChange} from "../control-panel/control-panel.component";
-import {Ballot} from "../vote-display/ballot-display.component";
+import {PointVisibilityChange} from '../control-panel/control-panel.component';
+import {Ballot} from '../vote-display/ballot-display.component';
 import {LocalStorageService} from '../services/local-storage.service';
 import {AppState, Session, SessionSettings} from '../services/local-storage.model';
-import {DefaultPointSelection, PointSelection} from "../point-selection/point-selection";
+import {DefaultPointSelection, PointSelection} from '../point-selection/point-selection';
+
 
 @Component({
   selector: 'app-active-session',
   templateUrl: './active-session.component.html',
-  styleUrls: ['./active-session.component.scss'],
+  styleUrls: ['./active-session.component.scss', './reberoni.scss'],
   providers: [ParticipantFilterPipe]
 })
 
@@ -77,7 +78,7 @@ export class ActiveSessionComponent implements OnInit, OnDestroy {
       if (maybeSession) {
         this.showLogs = maybeSession.settings.showEventLog;
       }
-    })
+    });
 
     this.route.paramMap
       .pipe(
@@ -97,7 +98,6 @@ export class ActiveSessionComponent implements OnInit, OnDestroy {
         map(this.handleEvents),
       )
       .subscribe();
-
 
     this.themeService.isDarkTheme.subscribe(isIt => this.isDarkTheme = isIt);
   }
@@ -186,8 +186,13 @@ export class ActiveSessionComponent implements OnInit, OnDestroy {
 
 
   pointSelectionChanged = (pointSelection: PointSelection) => {
-    this.pointSelection = pointSelection;
-  }
+    if (pointSelection) {
+      this.pointSelection = pointSelection;
+      const message = `Voting Scheme changed to ${pointSelection.votingScheme}`;
+      this.logs.unshift(message);
+      this.showInfoBar(message, 'happy');
+    }
+  };
 
   private requestInitialStateOfSessionBy = (id: number): void => {
     this.socketService.send(
@@ -244,9 +249,17 @@ export class ActiveSessionComponent implements OnInit, OnDestroy {
       case Events.GET_SESSION_NAME:
         this.setSessionName(messageData as GetStateForSessionMessage);
         break;
+      case Events.REBERONI:
+        this.setReberoni(messageData as ReberoniMessage);
+        break;
       default:
         console.log('not matched', eventType);
     }
+  };
+
+  private setReberoni = (messageData: ReberoniMessage) => {
+    this.reeberoniTime = messageData.payload.showReberoni;
+    this.reeberoniCount = 0;
   };
 
   private verifyPayloadAndUpdate = (payload: any, updateFunction: any, messageData: any) => {
@@ -339,7 +352,7 @@ export class ActiveSessionComponent implements OnInit, OnDestroy {
   };
 
   private clearLocalUserState = () => {
-    this.localStorage.removeUser(this.session.sessionId)
+    this.localStorage.removeUser(this.session.sessionId);
     this.participant = undefined;
   };
 
@@ -353,5 +366,47 @@ export class ActiveSessionComponent implements OnInit, OnDestroy {
         labelClass
       }
     });
+  };
+
+  reeberoniTime: boolean;
+  reeberoniCode = [
+    'ArrowUp',
+    'ArrowDown',
+    'ArrowLeft',
+    'ArrowRight',
+    'KeyR'
+  ];
+  reeberoniCount = 0;
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.code === this.reeberoniCode[this.reeberoniCount]) {
+      this.reeberoniCount++;
+    }
+
+    if (this.reeberoniCount === this.reeberoniCode.length) {
+      this.reeberoniTime = true;
+      this.socketService.send(
+        new ReberoniMessage(
+          new ReberoniPayload(
+            this.session.sessionId,
+            this.reeberoniTime
+          )
+        )
+      );
+    }
+  }
+
+  removeReberoni = () => {
+    this.reeberoniTime = false;
+    this.reeberoniCount = 0;
+    this.socketService.send(
+      new ReberoniMessage(
+        new ReberoniPayload(
+          this.session.sessionId,
+          this.reeberoniTime
+        )
+      )
+    );
   };
 }

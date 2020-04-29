@@ -240,3 +240,41 @@ func (s *Service) TerminateSession(ctx context.Context, req models.SpReqPayloadT
 
 	return nil
 }
+
+func (s *Service) VotingSchemeChanged(ctx context.Context, req models.SpReqPayloadVotingSchemeChanged) error {
+  respMsg := models.SpReplyMessage{
+    EventType: models.EventVotingSchemeChanged,
+    Payload:   struct {
+      SessionID string `json:"sessionId"`
+      VotingScheme string `json:"votingScheme"`
+    }{
+      req.Payload.SessionID,
+      req.Payload.VotingScheme,
+    },
+  }
+
+  if err := s.shareWithClients(s.clients, respMsg); err != nil {
+    return err
+  }
+
+  return nil
+}
+
+func (s *Service) ReberoniChanged(ctx context.Context, req models.SpReqPayloadReberoniChanged) error {
+  respMsg := models.SpReplyMessage{
+    EventType: models.EventReberoniChanged,
+    Payload:   struct {
+      SessionID string `json:"sessionId"`
+      ShowReberoni bool `json:"showReberoni"`
+    }{
+      req.Payload.SessionID,
+      req.Payload.ShowReberoni,
+    },
+  }
+
+  if err := s.shareWithClients(s.clients, respMsg); err != nil {
+    return err
+  }
+
+  return nil
+}

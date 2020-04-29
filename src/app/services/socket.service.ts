@@ -21,6 +21,7 @@ export class SocketService {
     const wsProtocol = document.location.protocol === 'https:' ? 'wss' : 'ws';
 
     const config = {
+      // url: `${wsProtocol}://localhost:8081/socket`,
       url: `${wsProtocol}://${host}/socket`,
       deserializer: (data) => data,
       openObserver: {
@@ -44,12 +45,12 @@ export class SocketService {
         map((event: MessageEvent) => {
           const messageData = JSON.parse(event.data) as SpMessage;
           if (messageData.eventType === 'error') {
-            this.showErrorBar(messageData.payload['message'])
+            this.showErrorBar(messageData.payload['message']);
           }
           return messageData;
         })
       );
-  }
+  };
 
   showErrorBar = (message: string): void => {
     this.snackBar.openFromComponent(AlertSnackbarComponent, {
@@ -61,7 +62,7 @@ export class SocketService {
         labelClass: 'warn',
       }
     });
-  }
+  };
 
   send = (message: any): void => {
     this.socket.next(message);
