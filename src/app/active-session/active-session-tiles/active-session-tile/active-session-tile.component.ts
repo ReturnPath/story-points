@@ -25,7 +25,7 @@ export class ActiveSessionTileComponent {
     dialogConfig.data = {
       id: this.session.id,
       sessionName: this.session.sessionName,
-      message: 'Destroy Session - Be You Certain?'
+      message: `Destroy Session? This could really mess up someone's day if they're in there`
     };
     const dialogRef = this.dialog.open(ConfirmDialogComponent, dialogConfig);
 
@@ -33,7 +33,8 @@ export class ActiveSessionTileComponent {
   }
 
   isPartnerForever() {
-    return this.session.id === 29 || this.session.sessionName === 'PDT - OCHRE FOR LIFE';
+    console.log('isPartnerForever', this.session.id, this.session.sessionName, this.session.id === 1 || this.session.sessionName)
+    return this.session.id === 29;
   }
 
   private destroySessionIfItIsWilled = (result: boolean) => {
