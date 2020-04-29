@@ -31,7 +31,7 @@ export class UserTileComponent {
   };
 
   isPartnerForeverProtected() {
-    return +this.sessionId === 1;
+    return +this.sessionId === 29;
   }
 }
 
