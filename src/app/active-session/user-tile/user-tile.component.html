@@ -1,5 +1,9 @@
 <mat-card
-  [ngClass]="{'my-card': myCard && !isDarkTheme, 'my-card-dark': myCard && isDarkTheme, 'voted': participant.hasVoted && !isDarkTheme, 'voted-dark': participant.hasVoted && isDarkTheme, 'partner-forever': isPartnerForeverProtected()}">
+  [ngClass]="{'my-card': myCard && !isDarkTheme,
+  'my-card-dark': myCard && isDarkTheme,
+  'voted': participant.hasVoted && !isDarkTheme,
+  'voted-dark': participant.hasVoted && isDarkTheme,
+  'partner-forever': isPartnerForeverProtected()}">
   <mat-card-title>
 
     <span>{{!pointsVisible && !myCard ? "?" : participant.point}}</span>
