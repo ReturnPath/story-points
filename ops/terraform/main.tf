@@ -23,9 +23,9 @@ resource "aws_db_instance" "release" {
   db_subnet_group_name = "vpc-test-private"
   deletion_protection = true
   engine = "mysql"
-  engine_version = "5.7"
+  engine_version = "5.7.28"
   identifier = "storypointsrelease"
-  instance_class = "db.t2.small"
+  instance_class = "db.t3.micro"
   maintenance_window = "Sun:05:54-Sun:06:24"
   monitoring_role_arn = data.aws_iam_role.rds_monitoring_role.arn
   monitoring_interval = "60"
