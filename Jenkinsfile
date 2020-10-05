@@ -5,7 +5,7 @@ deployNode {
 
     def tag = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
     def environment = 'test'
-    def cluster = "workload1-${environment}"
+    def cluster = "workload2-${environment}"
 
 
     dockerBuild {
